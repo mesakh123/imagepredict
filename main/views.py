@@ -39,6 +39,7 @@ from PIL import Image
 import cv2
 import numpy as np
 import caffe
+import io
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MEDIA_DIR = os.path.join(BASE_DIR,"media")
 # Create your views here.
@@ -46,6 +47,7 @@ MEDIA_DIR = os.path.join(BASE_DIR,"media")
 
 def image_save(im = None,str_time="default"):
     if im is None : return False
+    """
     image = cv2.imdecode(np.frombuffer(im, np.uint8), -1)
     width_resize = 224
     wpercent = (width_resize/float(image.shape[1]))
@@ -55,6 +57,16 @@ def image_save(im = None,str_time="default"):
     file_folder = os.path.join(MEDIA_DIR,str_time+'.jpg')
     stats = cv2.imwrite(file_folder,image)
     print("Stats " , stats)
+    """
+
+    image = Image.open(io.BytesIO(im))
+    width_resize = 224
+    wpercent = (width_resize/float(image.size[0]))
+    height_resize  = int(float(image.size[1])*float(wpercent))
+    file_folder = os.path.join(MEDIA_DIR,str_time+'.jpg')
+    image = image.convert("RGB")
+    stats = image.save(file_folder)
+    print("stats ",stats)
     return stats
 
 
